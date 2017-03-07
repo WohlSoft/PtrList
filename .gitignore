@@ -1,0 +1,11 @@
+test/bin
+build-*
+*.user
+*.o
+CMakeFiles
+Testing
+cmake_install.cmake
+CTestTestfile.cmake
+CMakeCache.txt
+Makefile
+
