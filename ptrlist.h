@@ -424,6 +424,7 @@ public:
 
     T &operator[](int index)
     {
+        assert(index >= 0);
         assert(index < int(m_size));
         return *(m_data[index]);
     }
@@ -436,6 +437,7 @@ public:
 
     T &operator[](long index)
     {
+        assert(index >= 0);
         assert(index < long(m_size));
         return *(m_data[index]);
     }
@@ -448,6 +450,7 @@ public:
 
     T &operator[](long long index)
     {
+        assert(index >= 0);
         assert(index < (long long)(m_size));
         return *(m_data[index]);
     }
