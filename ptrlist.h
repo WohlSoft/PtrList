@@ -42,8 +42,13 @@ class PtrList
 public:
     class iterator
     {
-        T** m_data;
-        size_t m_pos;
+        friend class PtrList;
+        T**     m_data;
+        size_t  m_pos;
+        iterator(T** d, size_t pos) :
+            m_data(d),
+            m_pos(pos)
+        {}
     public:
         iterator():
             m_data(nullptr),
@@ -53,17 +58,25 @@ public:
             m_data(it.m_data),
             m_pos(it.m_pos)
         {}
-        iterator(T** d, size_t pos) :
-            m_data(d),
-            m_pos(pos)
-        {}
         bool operator == (const iterator& i)
         {
-            return (m_pos==i.m_pos);
+            return (m_pos == i.m_pos);
         }
         bool operator != (const iterator& i)
         {
-            return (m_pos!=i.m_pos);
+            return (m_pos != i.m_pos);
+        }
+        friend iterator operator+(const iterator &it, int inc)
+        {
+            iterator i = it;
+            i.m_pos += inc;
+            return i;
+        }
+        friend iterator operator-(const iterator &it, int inc)
+        {
+            iterator i = it;
+            i.m_pos -= inc;
+            return i;
         }
         iterator& operator++()
         {
@@ -214,7 +227,7 @@ public:
         return false;
     }
 
-    ssize_t indexOf(T& item)
+    ssize_t indexOf(const T& item)
     {
         for(size_t i = 0; i < m_size; i++)
         {
@@ -224,28 +237,18 @@ public:
         return -1;
     }
 
-    bool contains(T& item)
-    {
-        for(size_t i = 0; i < m_size; i++)
-        {
-            if(*m_data[i] == item)
-                return true;
-        }
-        return false;
-    }
-
-    iterator find(T& item)
+    iterator find(const T& item)
     {
         iterator i = begin();
         for(; i != end(); i++)
         {
-            if(*m_data[i] == item)
+            if(*i == item)
                 break;
         }
         return i;
     }
 
-    void removeOne(T& item)
+    void removeOne(const T& item)
     {
         size_t i = 0, moveTo = m_size;
         for(; i < m_size; i++)
@@ -254,31 +257,53 @@ public:
             {
                 delete m_data[i];
                 moveTo = i;
+                i++;
                 break;
             }
         }
         for(; i < m_size; i++)
         {
-            if(moveTo == m_size)
-                break;
             m_data[moveTo++] = m_data[i];
         }
         m_size--;
         m_data[m_size] = nullptr;
     }
 
+    void removeAll(const T& item)
+    {
+        size_t i = 0, moveTo = m_size;
+        for(; i < m_size; i++)
+        {
+            if(*m_data[i] == item)
+            {
+                delete m_data[i];
+                if(moveTo == m_size)
+                    moveTo = i;
+                continue;
+            }
+            if(moveTo != m_size)
+                m_data[moveTo++] = m_data[i];
+        }
+        m_size -= (i - moveTo);
+        m_data[m_size] = nullptr;
+    }
+
     iterator erase(iterator pos)
     {
-        removeAt(pos.m_pos);
+        assert(pos.m_pos <= m_size);
+        removeAt(pos.m_pos, 1);
         return iterator(m_data, pos.m_pos);
     }
 
     iterator erase(iterator from, iterator to)
     {
-        size_t pos = from.m_pos;
-        while(from != to)
-            removeAt((from++).m_pos);
-        return iterator(m_data, pos);
+        assert(from.m_pos <= m_size);
+        assert(to.m_pos <= m_size);
+        assert(to.m_pos >= from.m_pos);
+        if(from == to)
+            return from;
+        removeAt(from.m_pos, to.m_pos - from.m_pos);
+        return iterator(m_data, from.m_pos);
     }
 
     void removeAt(size_t at)
@@ -294,6 +319,23 @@ public:
         }
         m_size--;
         m_data[m_size] = nullptr;
+    }
+
+    void removeAt(size_t at, size_t num)
+    {
+        assert(m_size > 0);
+        assert(m_size >= at + num);
+        size_t i = at, del_to = (at + num), moveTo = at;
+        while(i < del_to)
+            delete m_data[i++];
+        for(; i < m_size; i++)
+        {
+            if(moveTo == m_size)
+                break;
+            m_data[moveTo++] = m_data[i];
+        }
+        m_size -= num;
+        memset(m_data + m_size, 0, sizeof(T*)*num);
     }
 
     void pop_back()
