@@ -30,8 +30,7 @@ DEALINGS IN THE SOFTWARE.
 #include <inttypes.h>
 #include <stddef.h>
 #include <stdlib.h>
-
-#include <exception>
+#include <memory.h>
 
 template<class T>
 class PtrList
