@@ -30,10 +30,10 @@ DEALINGS IN THE SOFTWARE.
 #include <memory>
 
 template<class T>
-class VPtrList : public std::vector<std::shared_ptr<T>>
+class VPtrList : public std::vector<std::unique_ptr<T>>
 {
 public:
-    typedef std::shared_ptr<T> SHptr;
+    typedef std::unique_ptr<T> SHptr;
     typedef std::vector<SHptr> vecPTR;
     typedef typename vecPTR::iterator iterator;
     typedef typename vecPTR::const_iterator const_iterator;
