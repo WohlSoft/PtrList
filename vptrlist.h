@@ -307,40 +307,40 @@ public:
 
     T &operator[](unsigned int index)
     {
-        assert(index < (unsigned int)(vecPTR::size()));
+        assert(index < static_cast<unsigned int>(vecPTR::size()));
         return *(vecPTR::at(index));
     }
 
     T &operator[](int index)
     {
         assert(index >= 0);
-        assert(index < int(vecPTR::size()));
+        assert(index < static_cast<int>(vecPTR::size()));
         return *(vecPTR::at(index));
     }
 
     T &operator[](unsigned long index)
     {
-        assert(index < (unsigned long)(vecPTR::size()));
+        assert(index < static_cast<unsigned long>(vecPTR::size()));
         return *(vecPTR::at(index));
     }
 
     T &operator[](long index)
     {
         assert(index >= 0);
-        assert(index < long(vecPTR::size()));
+        assert(index < static_cast<unsigned long>(vecPTR::size()));
         return *(vecPTR::at(index));
     }
 
     T &operator[](unsigned long long index)
     {
-        assert(index < (unsigned long long)(vecPTR::size()));
+        assert(index < static_cast<unsigned long long>(vecPTR::size()));
         return *(vecPTR::at(index));
     }
 
     T &operator[](long long index)
     {
         assert(index >= 0);
-        assert(index < (long long)(vecPTR::size()));
+        assert(index < static_cast<long long>(vecPTR::size()));
         return *(vecPTR::at(index));
     }
 };
