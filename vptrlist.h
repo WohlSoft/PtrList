@@ -155,7 +155,7 @@ public:
     ssize_t indexOf(const T &item) const
     {
         size_t s = vecPTR::size();
-        SHptr *d = vecPTR::data();
+        const SHptr *d = vecPTR::data();
         size_t i = 0;
         for(; i < s; i++)
         {
@@ -178,7 +178,7 @@ public:
 
     const_iterator find(const T &item) const
     {
-        iterator i = begin();
+        const_iterator i = begin();
         for(; i != end(); i++)
         {
             if(*i->get() == item)
