@@ -61,6 +61,11 @@ public:
             return *(SIterator::operator*());
         }
 
+        TT *operator->()
+        {
+            return (SIterator::operator*().get());
+        }
+
         TT &operator[](size_t index)
         {
             return *(*this + index);
