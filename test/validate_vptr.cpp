@@ -2,11 +2,11 @@
 #include <catch/catch.hpp>
 #include <string>
 #include <vector>
-#include "../ptrlist.h"
+#include "../vptrlist.h"
 
 TEST_CASE( "vectors can be sized and resized", "[PtrList]" )
 {
-    PtrList<int> v( 5 );
+    VPtrList<int> v( 5 );
 
     REQUIRE( v.size() == 5 );
     REQUIRE( v.capacity() >= 5 );
@@ -41,7 +41,7 @@ TEST_CASE( "vectors can be sized and resized", "[PtrList]" )
 
 TEST_CASE( "Adding and removing items", "[PtrList]" )
 {
-    PtrList<int> v;
+    VPtrList<int> v;
     REQUIRE( v.size() == 0 );
 
     SECTION( "Reserve 10 and store 5 elements, then insert one" ) {
@@ -85,7 +85,7 @@ TEST_CASE( "Adding and removing items", "[PtrList]" )
         REQUIRE( v.size() == 6 );
 
         sum = 0;
-        for(PtrList<int>::iterator i = v.begin(); i != v.end(); i++)
+        for(VPtrList<int>::iterator i = v.begin(); i != v.end(); i++)
             sum += *i;
         REQUIRE( sum == 310 );
 
@@ -115,7 +115,7 @@ TEST_CASE( "Adding and removing items", "[PtrList]" )
         REQUIRE( v[0] == 45 );
         REQUIRE( v[1] == 73 );
 
-        PtrList<int>::iterator k = v.erase(v.begin() + 1);
+        VPtrList<int>::iterator k = v.erase(v.begin() + 1);
         REQUIRE( k == v.end());
         REQUIRE( v.size() == 1 );
         //45 was at begin
@@ -189,7 +189,7 @@ TEST_CASE( "Adding and removing items", "[PtrList]" )
 
     SECTION("Moving and Swapping items and copy of array")
     {
-        PtrList<int> copypasta;
+        VPtrList<int> copypasta;
         v.reserve(5);
         v.push_back(4);
         v.push_back(45);
