@@ -189,13 +189,15 @@ TEST_CASE( "Adding and removing items", "[PtrList]" )
 
     SECTION("Moving and Swapping items and copy of array")
     {
-        VPtrList<int> copypasta;
+        VPtrList<int> copypasta = {5, 15, 132, -54, 12};
+        REQUIRE( copypasta[0] == 5 );
+        REQUIRE( copypasta[1] == 15 );
+        REQUIRE( copypasta[2] == 132 );
+        REQUIRE( copypasta[3] == -54 );
+        REQUIRE( copypasta[4] == 12 );
+
         v.reserve(5);
-        v.push_back(4);
-        v.push_back(45);
-        v.push_back(23);
-        v.push_back(73);
-        v.push_back(77);
+        v.assign({4, 45, 23, 73, 77});
         REQUIRE( v.size() == 5 );
         REQUIRE( v.capacity() >= 5 );
 

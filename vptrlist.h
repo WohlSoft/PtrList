@@ -38,6 +38,16 @@ public:
     typedef std::vector<SHptr> vecPTR;
     typedef typename vecPTR::iterator       S_iterator;
     typedef typename vecPTR::const_iterator S_const_iterator;
+    typedef typename vecPTR::reverse_iterator       SR_iterator;
+    typedef typename vecPTR::const_reverse_iterator SR_const_iterator;
+
+    typedef T                               value_type;
+    typedef typename vecPTR::allocator_type allocator_type;
+    typedef size_t                          size_type;
+    typedef std::ptrdiff_t                  difference_type;
+    typedef T&                              reference;
+    typedef const T&                        const_reference;
+    typedef typename vecPTR::pointer        pointer;
 
     template<typename TT, class SIterator>
     class VPtrIterator : public SIterator
@@ -106,11 +116,19 @@ public:
         }
     };
 
-    typedef VPtrIterator<T, S_iterator>             iterator;
-    typedef VPtrIterator<const T, S_const_iterator> const_iterator;
+    typedef VPtrIterator<T, S_iterator>                 iterator;
+    typedef VPtrIterator<const T, S_const_iterator>     const_iterator;
+
+    typedef VPtrIterator<T, SR_iterator>                reverse_iterator;
+    typedef VPtrIterator<const T, SR_const_iterator>    const_reverse_iterator;
 
     VPtrList() : vecPTR()
     {}
+
+    VPtrList(std::initializer_list<T> il) : vecPTR()
+    {
+        this->assign(il);
+    }
 
     VPtrList(size_t size) : vecPTR(size)
     {}
@@ -123,6 +141,29 @@ public:
             this->append(o);
         }
         return *this;
+    }
+
+    template <class InputIterator>
+    void assign(InputIterator first, InputIterator last)
+    {
+        this->reserve(std::distance(first, last));
+        while(first < last)
+            vecPTR::push_back(SHptr(new T(*(first++))));
+    }
+
+    void assign(size_t n, const T& val)
+    {
+        this->reserve(n);
+        while((n--) > 0 )
+            vecPTR::push_back(SHptr(new T(val)));
+    }
+
+    void assign(std::initializer_list<T> il)
+    {
+        this->reserve(std::distance(il.begin(), il.end()));
+        auto i = il.begin();
+        while(i != il.end())
+            vecPTR::push_back(SHptr(new T(*(i++))));
     }
 
     iterator begin()
@@ -140,6 +181,41 @@ public:
     const_iterator end() const
     {
         return vecPTR::end();
+    }
+
+    const_iterator cbegin() const
+    {
+        return vecPTR::cbegin();
+    }
+    const_iterator cend() const
+    {
+        return vecPTR::cend();
+    }
+
+    reverse_iterator rbegin()
+    {
+        return vecPTR::begin();
+    }
+    reverse_iterator rend()
+    {
+        return vecPTR::rend();
+    }
+    const_reverse_iterator rbegin() const
+    {
+        return vecPTR::rbegin();
+    }
+    const_reverse_iterator rend() const
+    {
+        return vecPTR::rend();
+    }
+
+    const_reverse_iterator crbegin() const
+    {
+        return vecPTR::crbegin();
+    }
+    const_reverse_iterator crend() const
+    {
+        return vecPTR::crend();
     }
 
     size_t count() const
@@ -285,9 +361,31 @@ public:
         vecPTR::push_back(SHptr(new T(item)));
     }
 
+    void push_back(T &&item)
+    {
+        vecPTR::emplace_back(SHptr(new T(std::move(item))));
+    }
+
+    template<typename... _Args>
+    void emplace_back(_Args&&... __args)
+    {
+        vecPTR::emplace_back(std::move(SHptr(new T(std::forward<_Args>(__args)...))));
+    }
+
     void push_front(const T &item)
     {
         vecPTR::insert(begin(), SHptr(new T(item)));
+    }
+
+    void push_front(T &&item)
+    {
+        vecPTR::insert(begin(), SHptr(new T(std::move(item))));
+    }
+
+    template<typename... _Args>
+    iterator emplace(const_iterator pos, _Args&&... __args)
+    {
+        return vecPTR::emplace(pos, std::move(SHptr(new T(std::forward<_Args>(__args)...))));
     }
 
     void append(const T &item)
@@ -302,9 +400,19 @@ public:
             vecPTR::push_back(SHptr(new T(t)));
     }
 
-    void insert(size_t at, const T &item)
+    iterator insert(size_t at, const T &item)
     {
-        vecPTR::insert(begin() + at, SHptr(new T(item)));
+        return iterator(vecPTR::insert(begin() + at, SHptr(new T(item))));
+    }
+
+    iterator insert(const_iterator pos, const T &item)
+    {
+        iterator(vecPTR::insert(pos, SHptr(new T(item))));
+    }
+
+    iterator insert(const_iterator pos, T &&item)
+    {
+        iterator(vecPTR::insert(pos, SHptr(new T(std::move(item)))));
     }
 
     T &last()
