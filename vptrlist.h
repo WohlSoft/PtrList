@@ -51,17 +51,20 @@ public:
             return *(SIterator::operator*());
         }
 
+        TT& operator[](size_t index)
+        {
+            return *(*this + index);
+        }
+
         friend VPtrIterator operator+(const VPtrIterator &it, int inc)
         {
             S_iterator i = it;
-            i += inc;
-            return iterator(i);
+            return iterator(i += inc);
         }
         friend VPtrIterator operator-(const VPtrIterator &it, int inc)
         {
             S_iterator i = it;
-            i -= inc;
-            return iterator(i);
+            return iterator(i -= inc);
         }
         friend VPtrIterator operator+(const VPtrIterator &it1, const VPtrIterator &it2)
         {
@@ -303,6 +306,36 @@ public:
     {
         assert(vecPTR::size() > 0);
         return *vecPTR::front();
+    }
+
+    T &at(unsigned int index)
+    {
+        return *(vecPTR::at(static_cast<size_t>(index)));
+    }
+
+    T &at(int index)
+    {
+        return *(vecPTR::at(static_cast<size_t>(index)));
+    }
+
+    T &at(unsigned long index)
+    {
+        return *(vecPTR::at(static_cast<size_t>(index)));
+    }
+
+    T &at(long index)
+    {
+        return *(vecPTR::at(static_cast<size_t>(index)));
+    }
+
+    T &at(unsigned long long index)
+    {
+        return *(vecPTR::at(static_cast<size_t>(index)));
+    }
+
+    T &at(long long index)
+    {
+        return *(vecPTR::at(static_cast<size_t>(index)));
     }
 
     T &operator[](unsigned int index)
