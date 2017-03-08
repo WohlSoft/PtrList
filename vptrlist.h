@@ -43,15 +43,15 @@ public:
     class VPtrIterator : public SIterator
     {
     public:
-        VPtrIterator(const SIterator&o) : SIterator(o) {}
+        VPtrIterator(const SIterator &o) : SIterator(o) {}
         virtual ~VPtrIterator() {}
 
-        TT& operator*()
+        TT &operator*()
         {
             return *(SIterator::operator*());
         }
 
-        TT& operator[](size_t index)
+        TT &operator[](size_t index)
         {
             return *(*this + index);
         }
@@ -74,32 +74,32 @@ public:
         {
             return iterator(it1 - it2);
         }
-        VPtrIterator& operator++()
+        VPtrIterator &operator++()
         {
             SIterator::operator++();
             return *this;
         }
-        VPtrIterator& operator++(int)
+        VPtrIterator &operator++(int)
         {
             SIterator::operator++();
             return *this;
         }
-        VPtrIterator& operator+=(int inc)
+        VPtrIterator &operator+=(int inc)
         {
             SIterator::operator+=(inc);
             return *this;
         }
-        VPtrIterator& operator-=(int dec)
+        VPtrIterator &operator-=(int dec)
         {
             SIterator::operator-=(dec);
             return *this;
         }
-        VPtrIterator& operator+=(const VPtrIterator &inc)
+        VPtrIterator &operator+=(const VPtrIterator &inc)
         {
             SIterator::operator+=(inc);
             return *this;
         }
-        VPtrIterator& operator-=(const VPtrIterator &dec)
+        VPtrIterator &operator-=(const VPtrIterator &dec)
         {
             SIterator::operator-=(dec);
             return *this;
@@ -115,9 +115,9 @@ public:
     VPtrList(size_t size) : vecPTR(size)
     {}
 
-    VPtrList& operator=(const VPtrList& o)
+    VPtrList &operator=(const VPtrList &o)
     {
-        if (this != &o)
+        if(this != &o)
         {
             vecPTR::clear();
             this->append(o);
@@ -125,25 +125,37 @@ public:
         return *this;
     }
 
-    iterator begin() { return vecPTR::begin(); }
-    iterator end()   { return vecPTR::end(); }
-    const_iterator begin() const { return vecPTR::begin(); }
-    const_iterator end() const   { return vecPTR::end(); }
+    iterator begin()
+    {
+        return vecPTR::begin();
+    }
+    iterator end()
+    {
+        return vecPTR::end();
+    }
+    const_iterator begin() const
+    {
+        return vecPTR::begin();
+    }
+    const_iterator end() const
+    {
+        return vecPTR::end();
+    }
 
     size_t count() const
     {
         return vecPTR::size();
     }
 
-    bool contains(const T& item)
+    bool contains(const T &item) const
     {
         return indexOf(item) >= 0;
     }
 
-    ssize_t indexOf(const T& item)
+    ssize_t indexOf(const T &item) const
     {
         size_t s = vecPTR::size();
-        SHptr* d = vecPTR::data();
+        SHptr *d = vecPTR::data();
         size_t i = 0;
         for(; i < s; i++)
         {
@@ -153,7 +165,7 @@ public:
         return -1;
     }
 
-    iterator find(const T& item)
+    iterator find(const T &item)
     {
         iterator i = begin();
         for(; i != end(); i++)
@@ -164,7 +176,18 @@ public:
         return i;
     }
 
-    void removeOne(const T& item)
+    const_iterator find(const T &item) const
+    {
+        iterator i = begin();
+        for(; i != end(); i++)
+        {
+            if(*i->get() == item)
+                break;
+        }
+        return i;
+    }
+
+    void removeOne(const T &item)
     {
         iterator i = begin();
         for(; i != end(); i++)
@@ -177,17 +200,15 @@ public:
         }
     }
 
-    void removeAll(const T& item)
+    void removeAll(const T &item)
     {
         iterator i = begin();
         for(; i != end();)
         {
             if(*i->get() == item)
-            {
                 i == vecPTR::erase(i);
-            } else {
+            else
                 i++;
-            }
         }
     }
 
@@ -214,7 +235,7 @@ public:
 
     void removeAt(size_t at, size_t num)
     {
-        vecPTR::erase(begin() + at, begin() + (at+num));
+        vecPTR::erase(begin() + at, begin() + (at + num));
     }
 
     void pop_front()
@@ -232,7 +253,7 @@ public:
     void move(size_t from, size_t to)
     {
         size_t m_size = vecPTR::size();
-        SHptr* m_data = vecPTR::data();
+        SHptr *m_data = vecPTR::data();
         assert(m_size > from);
         assert(m_size > to);
         if(from == to)
@@ -242,32 +263,34 @@ public:
             SHptr it = std::move(m_data[from]);
             while(from < to)
             {
-                m_data[from] = std::move(m_data[from+1]);
+                m_data[from] = std::move(m_data[from + 1]);
                 from++;
             }
             m_data[to] = std::move(it);
-        } else {
+        }
+        else
+        {
             SHptr it = std::move(m_data[from]);
             while(from > to)
             {
-                m_data[from] = std::move(m_data[from-1]);
+                m_data[from] = std::move(m_data[from - 1]);
                 from--;
             }
             m_data[to] = std::move(it);
         }
     }
 
-    void push_back(const T& item)
+    void push_back(const T &item)
     {
         vecPTR::push_back(SHptr(new T(item)));
     }
 
-    void push_front(const T& item)
+    void push_front(const T &item)
     {
         vecPTR::insert(begin(), SHptr(new T(item)));
     }
 
-    void append(const T& item)
+    void append(const T &item)
     {
         vecPTR::push_back(SHptr(new T(item)));
     }
@@ -275,34 +298,58 @@ public:
     void append(const VPtrList<T> &array)
     {
         vecPTR::reserve(array.size());
-        for(const T& t : array)
+        for(const T &t : array)
             vecPTR::push_back(SHptr(new T(t)));
     }
 
-    void insert(size_t at, const T& item)
+    void insert(size_t at, const T &item)
     {
         vecPTR::insert(begin() + at, SHptr(new T(item)));
     }
 
-    T& last()
+    T &last()
     {
         assert(vecPTR::size() > 0);
         return *vecPTR::back();
     }
 
-    T& first()
+    T &first()
     {
         assert(vecPTR::size() > 0);
         return *vecPTR::front();
     }
 
-    T& back()
+    T &back()
     {
         assert(vecPTR::size() > 0);
         return *vecPTR::back();
     }
 
-    T& front()
+    T &front()
+    {
+        assert(vecPTR::size() > 0);
+        return *vecPTR::front();
+    }
+
+    const T &last() const
+    {
+        assert(vecPTR::size() > 0);
+        return *vecPTR::back();
+    }
+
+    const T &first() const
+    {
+        assert(vecPTR::size() > 0);
+        return *vecPTR::front();
+    }
+
+    const T &back() const
+    {
+        assert(vecPTR::size() > 0);
+        return *vecPTR::back();
+    }
+
+    const T &front() const
     {
         assert(vecPTR::size() > 0);
         return *vecPTR::front();
@@ -338,6 +385,37 @@ public:
         return *(vecPTR::at(static_cast<size_t>(index)));
     }
 
+    const T &at(unsigned int index) const
+    {
+        return *(vecPTR::at(static_cast<size_t>(index)));
+    }
+
+    const T &at(int index) const
+    {
+        return *(vecPTR::at(static_cast<size_t>(index)));
+    }
+
+    const T &at(unsigned long index) const
+    {
+        return *(vecPTR::at(static_cast<size_t>(index)));
+    }
+
+    const T &at(long index) const
+    {
+        return *(vecPTR::at(static_cast<size_t>(index)));
+    }
+
+    const T &at(unsigned long long index) const
+    {
+        return *(vecPTR::at(static_cast<size_t>(index)));
+    }
+
+    const T &at(long long index) const
+    {
+        return *(vecPTR::at(static_cast<size_t>(index)));
+    }
+
+
     T &operator[](unsigned int index)
     {
         assert(index < static_cast<unsigned int>(vecPTR::size()));
@@ -371,6 +449,46 @@ public:
     }
 
     T &operator[](long long index)
+    {
+        assert(index >= 0);
+        assert(index < static_cast<long long>(vecPTR::size()));
+        return *(vecPTR::at(index));
+    }
+
+
+    const T &operator[](unsigned int index) const
+    {
+        assert(index < static_cast<unsigned int>(vecPTR::size()));
+        return *(vecPTR::at(index));
+    }
+
+    const T &operator[](int index) const
+    {
+        assert(index >= 0);
+        assert(index < static_cast<int>(vecPTR::size()));
+        return *(vecPTR::at(index));
+    }
+
+    const T &operator[](unsigned long index) const
+    {
+        assert(index < static_cast<unsigned long>(vecPTR::size()));
+        return *(vecPTR::at(index));
+    }
+
+    const T &operator[](long index) const
+    {
+        assert(index >= 0);
+        assert(index < static_cast<unsigned long>(vecPTR::size()));
+        return *(vecPTR::at(index));
+    }
+
+    const T &operator[](unsigned long long index) const
+    {
+        assert(index < static_cast<unsigned long long>(vecPTR::size()));
+        return *(vecPTR::at(index));
+    }
+
+    const T &operator[](long long index) const
     {
         assert(index >= 0);
         assert(index < static_cast<long long>(vecPTR::size()));
