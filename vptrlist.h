@@ -30,6 +30,14 @@ DEALINGS IN THE SOFTWARE.
 #include <memory>
 #include <assert.h>
 
+#ifdef _MSC_VER
+#ifdef _WIN64
+typedef long long ssize_t;
+#else
+typedef int ssize_t;
+#endif
+#endif
+
 template<class T>
 class VPtrList : public std::vector<std::unique_ptr<T>>
 {
@@ -335,11 +343,11 @@ public:
     void removeOne(const T &item)
     {
         iterator i = this->begin();
-        for(; i != end(); i++)
+        for(; i != this->end(); i++)
         {
             if(*i == item)
             {
-                vecPTR::erase(i);
+                this->erase(i);
                 break;
             }
         }
@@ -348,10 +356,10 @@ public:
     void removeAll(const T &item)
     {
         iterator i = this->begin();
-        for(; i != end();)
+        for(; i != this->end();)
         {
             if(*i == item)
-                i == vecPTR::erase(i);
+                i == this->erase(i);
             else
                 i++;
         }
@@ -360,7 +368,7 @@ public:
     iterator erase(iterator pos)
     {
         assert(pos < end());
-        return iterator(vecPTR::erase(pos));
+        return iterator(vecPTR::erase(static_cast<S_iterator>(pos)));
     }
 
     iterator erase(iterator from, iterator to)
@@ -370,22 +378,22 @@ public:
         assert(from <= to);
         if(from == to)
             return from;
-        return iterator(vecPTR::erase(from, to));
+        return iterator(vecPTR::erase(S_iterator(from), S_iterator(to)));
     }
 
     void removeAt(size_t at)
     {
-        vecPTR::erase(begin() + at);
+        vecPTR::erase(begin() + int(at));
     }
 
     void removeAt(size_t at, size_t num)
     {
-        vecPTR::erase(begin() + at, begin() + (at + num));
+        vecPTR::erase(vecPTR::begin() + int(at), vecPTR::begin() + int(at + num));
     }
 
     void pop_front()
     {
-        vecPTR::erase(begin(), begin() + 1);
+        vecPTR::erase(vecPTR::begin(), vecPTR::begin() + 1);
     }
 
     void swap(size_t from, size_t to)
@@ -454,7 +462,7 @@ public:
     template<typename... _Args>
     iterator emplace(const_iterator pos, _Args&&... __args)
     {
-        return vecPTR::emplace(pos, std::move(SHptr(new T(std::forward<_Args>(__args)...))));
+        return vecPTR::emplace(S_const_iterator(pos), std::move(SHptr(new T(std::forward<_Args>(__args)...))));
     }
 
     void append(const T &item)
@@ -471,17 +479,17 @@ public:
 
     iterator insert(size_t at, const T &item)
     {
-        return iterator(vecPTR::insert(begin() + at, SHptr(new T(item))));
+        return iterator(vecPTR::insert(vecPTR::begin() + int(at), SHptr(new T(item))));
     }
 
     iterator insert(const_iterator pos, const T &item)
     {
-        iterator(vecPTR::insert(pos, SHptr(new T(item))));
+        iterator(vecPTR::insert(S_const_iterator(pos), SHptr(new T(item))));
     }
 
     iterator insert(const_iterator pos, T &&item)
     {
-        iterator(vecPTR::insert(pos, SHptr(new T(std::move(item)))));
+        iterator(vecPTR::insert(S_const_iterator(pos), SHptr(new T(std::move(item)))));
     }
 
     T &last()
