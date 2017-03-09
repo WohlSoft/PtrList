@@ -130,6 +130,15 @@ public:
     VPtrList() : vecPTR()
     {}
 
+    VPtrList(const VPtrList<T>& o) : vecPTR()
+    {
+        if(this != &o)
+        {
+            vecPTR::clear();
+            this->append(o);
+        }
+    }
+
     VPtrList(std::initializer_list<T> il) : vecPTR()
     {
         this->assign(il);
@@ -248,10 +257,10 @@ public:
 
     iterator find(const T &item)
     {
-        iterator i = begin();
+        iterator i = this->begin();
         for(; i != end(); i++)
         {
-            if(*i->get() == item)
+            if(*i == item)
                 break;
         }
         return i;
@@ -259,10 +268,32 @@ public:
 
     const_iterator find(const T &item) const
     {
-        const_iterator i = begin();
+        const_iterator i = this->cbegin();
         for(; i != end(); i++)
         {
-            if(*i->get() == item)
+            if(*i == item)
+                break;
+        }
+        return i;
+    }
+
+    iterator find_last_of(const T &item)
+    {
+        reverse_iterator i = this->rbegin();
+        for(; i != end(); i++)
+        {
+            if(*i == item)
+                break;
+        }
+        return i;
+    }
+
+    const_iterator find_last_of(const T &item) const
+    {
+        const_reverse_iterator i = this->crbegin();
+        for(; i != end(); i++)
+        {
+            if(*i == item)
                 break;
         }
         return i;
@@ -270,10 +301,10 @@ public:
 
     void removeOne(const T &item)
     {
-        iterator i = begin();
+        iterator i = this->begin();
         for(; i != end(); i++)
         {
-            if(*(i->get()) == item)
+            if(*i == item)
             {
                 vecPTR::erase(i);
                 break;
@@ -283,10 +314,10 @@ public:
 
     void removeAll(const T &item)
     {
-        iterator i = begin();
+        iterator i = this->begin();
         for(; i != end();)
         {
-            if(*i->get() == item)
+            if(*i == item)
                 i == vecPTR::erase(i);
             else
                 i++;
