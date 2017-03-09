@@ -15,8 +15,12 @@ Just include vptrlist.h into your project and use the class VPtrList by same way
 * Has extra functions:
     * `bool contains(const T &item) const;` - to check existing of element by it's content
     * `ssize_t indexOf(const T &item) const;` - finds item at begin and returns index of it or -1 if item is not found
-    * `iterator find(const T &item);` - finds item at begun and returns iterator of it or .end() if item is not found
+    * `ssize_t lastIndexOf(const T &item) const;` - finds item at утв and returns index of it or -1 if item is not found
+    * `iterator find(const T &item);` - finds item at begin and returns iterator of it or .end() if item is not found
     * `iterator find_last_of(const T &item)` - finds item at end and returns iterator of it or .rend() if item is not found
+    * `iterator find(const T &item, iterator beg);` - finds item at specified position and returns iterator of it or .end() if item is not found
+    * `iterator find_last_of(const T &item)` - finds item at end and returns iterator of it or .rend() if item is not found
+    * `iterator find_last_of(const T &item, reverse_iterator beg)` - finds item at specified position and returns iterator of it or .rend() if item is not found
     * `void removeOne(const T &item)` - finds item by content and removes it and stops on first case
     * `void removeAll(const T &item)` - find all items by same content and remove all of them, and stop on reaching end
     * `void removeAt(size_t at)` - remove item by index

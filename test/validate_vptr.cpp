@@ -82,6 +82,12 @@ TEST_CASE( "Adding and removing items", "[PtrList]" )
         REQUIRE( v.find(88) != v.end() );
         REQUIRE( v.find(42) == v.end() );
 
+        REQUIRE( v.indexOf(73) == 4 );
+        REQUIRE( v.indexOf(42) == -1 );
+
+        REQUIRE( v.lastIndexOf(88) == 2 );
+        REQUIRE( v.lastIndexOf(42) == -1 );
+
         REQUIRE( v.size() == 6 );
 
         sum = 0;
