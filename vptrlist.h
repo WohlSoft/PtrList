@@ -424,7 +424,7 @@ public:
         {
             if(**i == item)
             {
-                i == vecPTR::erase(i);
+                vecPTR::erase(i);
                 break;
             }
         }
@@ -436,7 +436,7 @@ public:
         for(; i != vecPTR::end();)
         {
             if(**i == item)
-                i == vecPTR::erase(i);
+                i = vecPTR::erase(i);
             else
                 i++;
         }
