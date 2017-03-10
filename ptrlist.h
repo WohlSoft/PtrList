@@ -32,6 +32,14 @@ DEALINGS IN THE SOFTWARE.
 #include <stdlib.h>
 #include <memory.h>
 
+#ifdef _MSC_VER
+#ifdef _WIN64
+typedef long long ssize_t;
+#else
+typedef int ssize_t;
+#endif
+#endif
+
 template<class T>
 class PtrList
 {
