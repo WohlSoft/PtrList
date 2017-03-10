@@ -1,11 +1,15 @@
 # PtrList
 A vector-like container template which stores elements as array of pointers to each element
 
-[![CircleCI](https://circleci.com/gh/WohlSoft/PtrList.svg?style=svg)](https://circleci.com/gh/WohlSoft/PtrList)
+[![CircleCI](https://circleci.com/gh/WohlSoft/PtrList.svg?style=svg)](https://circleci.com/gh/WohlSoft/PtrList) [![Build status](https://ci.appveyor.com/api/projects/status/bgoftm49v34ddefk?svg=true)](https://ci.appveyor.com/project/Wohlstand/ptrlist)
+
 
 # Has two implementations
 * vptrlist.h - implemented as inherence of std::vector<std::unique_ptr<T>> (works faster more stable)
 * ptrlist.h - implemented from scratch (early implementation)
+
+# Requirements
+* C++11 support (Tested on GCC 5, Clang and MSVC2015)
 
 # How to use
 Just include vptrlist.h into your project and use the class VPtrList by same way as well known std::vector. Useful in case when elements are must have persistent address to be able have an external pointers to each of them.
