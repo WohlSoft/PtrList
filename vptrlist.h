@@ -419,12 +419,12 @@ public:
 
     void removeOne(const T &item)
     {
-        iterator i = this->begin();
-        for(; i != this->end(); i++)
+        S_iterator i = vecPTR::begin();
+        for(; i != vecPTR::end();)
         {
-            if(*i == item)
+            if(**i == item)
             {
-                this->erase(i);
+                i == vecPTR::erase(i);
                 break;
             }
         }
@@ -432,11 +432,11 @@ public:
 
     void removeAll(const T &item)
     {
-        iterator i = this->begin();
-        for(; i != this->end();)
+        S_iterator i = vecPTR::begin();
+        for(; i != vecPTR::end();)
         {
-            if(*i == item)
-                i == this->erase(i);
+            if(**i == item)
+                i == vecPTR::erase(i);
             else
                 i++;
         }
