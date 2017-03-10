@@ -1,23 +1,21 @@
 version: 1.0.{build}
 
 build_script:
-- cmd: >-
-    cmake .
-    cmake --build . --config release
-    cmake --build . --config debug
+  - cmd: cmake .
+  - cmd: cmake --build . --config release
+  - cmd: cmake --build . --config debug
 
 test_script:
-- cmd: >-
-    ctest --build-config debug
-    ctest --build-config release
+  - cmd: ctest --build-config debug
+  - cmd: ctest --build-config release
 
 after_test:
-- cmd: >-
-    type Testing/Temporary/LastTest.log
-    type Testing/Temporary/CTestCostData.txt
+  - cmd: type Testing/Temporary/LastTest.log
+  - cmd: type Testing/Temporary/CTestCostData.txt
 
 artifacts:
-- path: Testing/Temporary/CTestCostData.txt
-  name: CTestCostData.txt
-- path: Testing/Temporary/LastTest.log
-  name: LastTest.log
+  - path: Testing/Temporary/CTestCostData.txt
+    name: CTestCostData.txt
+  - path: Testing/Temporary/LastTest.log
+    name: LastTest.log
+
