@@ -38,12 +38,12 @@ typedef int ssize_t;
 #endif
 #endif
 
-template<class T>
-class VPtrList : public std::vector<std::unique_ptr<T>>
+template<class T, typename _Alloc = std::allocator<T>>
+class VPtrList : private std::vector<std::unique_ptr<T>, _Alloc>
 {
 public:
     typedef std::unique_ptr<T> SHptr;
-    typedef std::vector<SHptr> vecPTR;
+    typedef std::vector<SHptr, _Alloc> vecPTR;
     typedef typename vecPTR::iterator       S_iterator;
     typedef typename vecPTR::const_iterator S_const_iterator;
     typedef typename vecPTR::reverse_iterator       SR_iterator;
@@ -135,59 +135,6 @@ public:
     typedef VPtrIterator<T, SR_iterator>                reverse_iterator;
     typedef VPtrIterator<const T, SR_const_iterator>    const_reverse_iterator;
 
-    VPtrList() : vecPTR()
-    {}
-
-    VPtrList(const VPtrList<T>& o) : vecPTR()
-    {
-        if(this != &o)
-        {
-            vecPTR::clear();
-            this->append(o);
-        }
-    }
-
-    VPtrList(std::initializer_list<T> il) : vecPTR()
-    {
-        this->assign(il);
-    }
-
-    VPtrList(size_t size) : vecPTR(size)
-    {}
-
-    VPtrList &operator=(const VPtrList &o)
-    {
-        if(this != &o)
-        {
-            vecPTR::clear();
-            this->append(o);
-        }
-        return *this;
-    }
-
-    template <class InputIterator>
-    void assign(InputIterator first, InputIterator last)
-    {
-        this->reserve(std::distance(first, last));
-        while(first < last)
-            vecPTR::push_back(SHptr(new T(*(first++))));
-    }
-
-    void assign(size_t n, const T& val)
-    {
-        this->reserve(n);
-        while((n--) > 0 )
-            vecPTR::push_back(SHptr(new T(val)));
-    }
-
-    void assign(std::initializer_list<T> il)
-    {
-        this->reserve(std::distance(il.begin(), il.end()));
-        auto i = il.begin();
-        while(i != il.end())
-            vecPTR::push_back(SHptr(new T(*(i++))));
-    }
-
     iterator begin()
     {
         return vecPTR::begin();
@@ -240,9 +187,109 @@ public:
         return vecPTR::crend();
     }
 
+
+    VPtrList() : vecPTR()
+    {}
+
+    VPtrList(const VPtrList<T>& o) : vecPTR()
+    {
+        if(this != &o)
+        {
+            vecPTR::clear();
+            this->append(o);
+        }
+    }
+
+    VPtrList(std::initializer_list<T> il) : vecPTR()
+    {
+        this->assign(il);
+    }
+
+    VPtrList(size_t size) : vecPTR(size)
+    {}
+
+
+    VPtrList &operator=(const VPtrList &o)
+    {
+        if(this != &o)
+        {
+            vecPTR::clear();
+            this->append(o);
+        }
+        return *this;
+    }
+
+    template <class InputIterator>
+    void assign(InputIterator first, InputIterator last)
+    {
+        this->reserve(std::distance(first, last));
+        while(first < last)
+            vecPTR::push_back(SHptr(new T(*(first++))));
+    }
+
+    void assign(size_t n, const T& val)
+    {
+        this->reserve(n);
+        while((n--) > 0 )
+            vecPTR::push_back(SHptr(new T(val)));
+    }
+
+    void assign(std::initializer_list<T> il)
+    {
+        this->reserve(std::distance(il.begin(), il.end()));
+        auto i = il.begin();
+        while(i != il.end())
+            vecPTR::push_back(SHptr(new T(*(i++))));
+    }
+
+    bool empty() const noexcept
+    {
+        return vecPTR::empty();
+    }
+
+    bool isEmpty() const noexcept
+    {
+        return vecPTR::empty();
+    }
+
+    size_t size() const
+    {
+        return vecPTR::size();
+    }
+
     size_t count() const
     {
         return vecPTR::size();
+    }
+
+    size_t max_size() const
+    {
+        return vecPTR::max_size();
+    }
+
+    size_t capacity() const
+    {
+        return vecPTR::capacity();
+    }
+
+    void reserve(size_t _n)
+    {
+        vecPTR::reserve(_n);
+    }
+
+    void resize(size_t _n)
+    {
+        vecPTR::resize(_n);
+    }
+
+    void shrink_to_fit()
+    {
+        vecPTR::shrink_to_fit();
+    }
+
+    SHptr* data()
+    {
+        return vecPTR::data();
     }
 
     bool contains(const T &item) const
@@ -340,6 +387,11 @@ public:
         return i;
     }
 
+    void clear()
+    {
+        vecPTR::clear();
+    }
+
     void removeOne(const T &item)
     {
         iterator i = this->begin();
@@ -367,28 +419,36 @@ public:
 
     iterator erase(iterator pos)
     {
-        assert(pos < end());
-        return iterator(vecPTR::erase(static_cast<S_iterator>(pos)));
+        assert(pos < this->end());
+        S_iterator spos = static_cast<S_iterator>(pos);
+        return iterator(vecPTR::erase(spos));
     }
 
     iterator erase(iterator from, iterator to)
     {
-        assert(from < end());
-        assert(to < end());
+        assert(from < this->end());
+        assert(to < this->end());
         assert(from <= to);
         if(from == to)
             return from;
-        return iterator(vecPTR::erase(S_iterator(from), S_iterator(to)));
+        S_iterator sfrom    = static_cast<S_iterator>(from);
+        S_iterator sto      = static_cast<S_iterator>(to);
+        return iterator(vecPTR::erase(sfrom, sto));
     }
 
     void removeAt(size_t at)
     {
-        vecPTR::erase(begin() + int(at));
+        vecPTR::erase(vecPTR::begin() + int(at));
     }
 
     void removeAt(size_t at, size_t num)
     {
         vecPTR::erase(vecPTR::begin() + int(at), vecPTR::begin() + int(at + num));
+    }
+
+    void pop_back()
+    {
+        vecPTR::pop_back();
     }
 
     void pop_front()
@@ -462,7 +522,8 @@ public:
     template<typename... _Args>
     iterator emplace(const_iterator pos, _Args&&... __args)
     {
-        return vecPTR::emplace(S_const_iterator(pos), std::move(SHptr(new T(std::forward<_Args>(__args)...))));
+        S_const_iterator spos = static_cast<S_const_iterator>(pos);
+        return vecPTR::emplace(spos, std::move(SHptr(new T(std::forward<_Args>(__args)...))));
     }
 
     void append(const T &item)
@@ -679,6 +740,47 @@ public:
         assert(index < static_cast<long long>(vecPTR::size()));
         return *(vecPTR::at(index));
     }
+
+    allocator_type get_allocator() const noexcept
+    {
+        return vecPTR::get_allocator();
+    }
 };
+
+template <class T, class Alloc>
+inline bool operator== (const VPtrList<T,Alloc>& __x, const VPtrList<T, Alloc>& __y)
+{
+    return (__x.size() == __y.size()) && std::equal(__x.begin(), __x.end(), __y.begin());
+}
+
+template <class T, class Alloc>
+bool operator!= (const VPtrList<T,Alloc>& __x, const VPtrList<T,Alloc>& __y)
+{
+    return !(__x == __y);
+}
+
+template <class T, class Alloc>
+bool operator<  (const VPtrList<T,Alloc>& __x, const VPtrList<T,Alloc>& __y)
+{
+    return std::lexicographical_compare(__x.begin(), __x.end(), __y.begin(), __y.end());
+}
+
+template <class T, class Alloc>
+bool operator<= (const VPtrList<T,Alloc>& __x, const VPtrList<T,Alloc>& __y)
+{
+    return !(__y < __x);
+}
+
+template <class T, class Alloc>
+bool operator>  (const VPtrList<T,Alloc>& __x, const VPtrList<T,Alloc>& __y)
+{
+    return __y < __x;
+}
+
+template <class T, class Alloc>
+bool operator>= (const VPtrList<T,Alloc>& __x, const VPtrList<T,Alloc>& __y)
+{
+    return !(__x < __y);
+}
 
 #endif // VPTRLIST_H
