@@ -9,7 +9,7 @@ test_script:
   - cmd: ctest --build-config debug
   - cmd: ctest --build-config release
 
-after_test:
+on_failure:
   - cmd: type Testing/Temporary/LastTest.log
   - cmd: type Testing/Temporary/CTestCostData.txt
 
