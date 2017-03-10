@@ -545,12 +545,14 @@ public:
 
     iterator insert(const_iterator pos, const T &item)
     {
-        iterator(vecPTR::insert(S_const_iterator(pos), SHptr(new T(item))));
+        S_const_iterator spos = static_cast<S_const_iterator>(pos);
+        iterator(vecPTR::insert(spos, SHptr(new T(item))));
     }
 
     iterator insert(const_iterator pos, T &&item)
     {
-        iterator(vecPTR::insert(S_const_iterator(pos), SHptr(new T(std::move(item)))));
+        S_const_iterator spos = static_cast<S_const_iterator>(pos);
+        iterator(vecPTR::insert(spos, SHptr(new T(std::move(item)))));
     }
 
     T &last()
