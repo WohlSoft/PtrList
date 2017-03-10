@@ -420,7 +420,7 @@ public:
     void removeOne(const T &item)
     {
         S_iterator i = vecPTR::begin();
-        for(; i != vecPTR::end();)
+        for(; i != vecPTR::end();i++)
         {
             if(**i == item)
             {
