@@ -60,8 +60,7 @@ public:
     template<typename TT, class SIterator>
     class VPtrIterator
     {
-        template<class _T, typename __Alloc>
-        friend class VPtrList;
+        friend class VPtrList<T, _Alloc>;
         SIterator p;
     public:
         VPtrIterator(const VPtrIterator&o) : p(o.p) {}
