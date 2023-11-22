@@ -1,8 +1,8 @@
 /*
-PtrList - A vector-like container template which stores elements as array of pointers to each element
-          to allow taking pointers to each element of container
+PtrList - A vector-like container template which stores elements as array of pointers
+to each element to allow taking pointers to each element of container
 
-Copyright (c) 2017 Vitaliy Novichkov <admin@wohlnet.ru>
+Copyright (c) 2017-2023 Vitaliy Novichkov <admin@wohlnet.ru>
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the "Software"),
